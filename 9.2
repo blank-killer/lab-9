@@ -1,0 +1,142 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Structure for a node
+struct Node {
+    int data;
+    struct Node* left;
+    struct Node* right;
+};
+
+// Function to create a new node
+struct Node* createNode(int data) {
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    newNode->data = data;
+    newNode->left = newNode->right = NULL;
+    return newNode;
+}
+
+// Function to insert a node in BST
+struct Node* insertNode(struct Node* root, int data) {
+    if (root == NULL) {
+        root = createNode(data);
+        return root;
+    }
+
+    if (data < root->data)
+        root->left = insertNode(root->left, data);
+    else if (data > root->data)
+        root->right = insertNode(root->right, data);
+
+    return root;
+}
+
+// Function to find the largest element in BST
+int findLargest(struct Node* root) {
+    if (root == NULL) {
+        printf("Tree is empty.\n");
+        return -1;
+    }
+
+    if (root->right == NULL)
+        return root->data;
+
+    return findLargest(root->right);
+}
+
+// Function to find the smallest element in BST
+int findSmallest(struct Node* root) {
+    if (root == NULL) {
+        printf("Tree is empty.\n");
+        return -1;
+    }
+
+    if (root->left == NULL)
+        return root->data;
+
+    return findSmallest(root->left);
+}
+
+// Function to calculate the height of a node
+int getHeight(struct Node* root) {
+    if (root == NULL)
+        return -1;
+
+    int leftHeight = getHeight(root->left);
+    int rightHeight = getHeight(root->right);
+
+    return (leftHeight > rightHeight ? leftHeight : rightHeight) + 1;
+}
+
+// Function to count the number of leaf nodes
+int countLeafNodes(struct Node* root) {
+    if (root == NULL)
+        return 0;
+
+    if (root->left == NULL && root->right == NULL)
+        return 1;
+
+    return countLeafNodes(root->left) + countLeafNodes(root->right);
+}
+
+// Function for preorder traversal
+void preorderTraversal(struct Node* root) {
+    if (root == NULL)
+        return;
+
+    printf("%d ", root->data);
+    preorderTraversal(root->left);
+    preorderTraversal(root->right);
+}
+
+// Function to display the menu
+void displayMenu() {
+    printf("\nBinary Search Tree Operations\n");
+    printf("1. Insert an element\n");
+    printf("2. Display the largest element\n");
+    printf("3. Display the smallest element\n");
+    printf("4. Calculate the height of a node\n");
+    printf("5. Count the number of leaf nodes\n");
+    printf("6. Exit\n");
+    printf("Enter your choice: ");
+}
+
+// Main function
+int main() {
+    struct Node* root = NULL;
+    int choice, data;
+
+    do {
+        displayMenu();
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                printf("Enter element to be inserted: ");
+                scanf("%d", &data);
+                root = insertNode(root, data);
+                break;
+            case 2:
+                printf("Largest element in the BST: %d\n", findLargest(root));
+                break;
+            case 3:
+                printf("Smallest element in the BST: %d\n", findSmallest(root));
+                break;
+            case 4:
+                printf("Enter node value to calculate its height: ");
+                scanf("%d", &data);
+                printf("Height of the node: %d\n", getHeight(search(root, data)));
+                break;
+            case 5:
+                printf("Number of leaf nodes: %d\n", countLeafNodes(root));
+                break;
+            case 6:
+                printf("Exiting...\n");
+                break;
+            default:
+                printf("Invalid choice. Please enter a valid option.\n");
+        }
+    } while (choice != 6);
+
+    return 0;
+}
